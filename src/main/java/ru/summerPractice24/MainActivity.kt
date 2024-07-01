@@ -1,8 +1,6 @@
 package ru.summerPractice24
 import kotlin.random.Random
 
-
-
 // Основной класс Автомобиль
 open class Car(val brand: String, val model: String, val year: Int, val drive: String, val power: Int, val type: String) {
     open fun getInfo() {
@@ -58,7 +56,55 @@ fun createRandomCar(): Car {
     }
 }
 
+fun raceRound(cars: List<Car>): List<Car> {
+    val winners = mutableListOf<Car>()
+    val random = Random
+    val shuffledCars = cars.shuffled()
 
+    for (i in shuffledCars.indices step 2) {
+        if (i + 1 < shuffledCars.size) {
+            val car1 = shuffledCars[i]
+            val car2 = shuffledCars[i + 1]
+            val winner = if (random.nextBoolean()) car1 else car2
+            println("Гонка между ${car1.brand} ${car1.model} и ${car2.brand} ${car2.model}, Победитель: ${winner.brand} ${winner.model}")
+            winners.add(winner)
+        } else {
+            val car = shuffledCars[i]
+            winners.add(car)
+            println("${car.brand} ${car.model} - Нет пары, следующий круг")
+        }
+    }
+
+    return winners
+}
+
+fun getUserInput(prompt: String): String {
+    print(prompt)
+    return readLine() ?: ""
+}
+
+fun main() {
+    val input = getUserInput("Введите количество автомобилей для гонки: ")
+    val numCars = input.toIntOrNull()
+
+    if (numCars != null && numCars > 0) {
+        val cars = List(numCars){
+            createRandomCar()
+        }
+        var round = 1
+        var remainingCars = cars
+
+        while (remainingCars.size > 1) {
+            println("--- Раунд $round ---")
+            remainingCars = raceRound(remainingCars)
+            round++
+        }
+
+        println("Победитель: ${remainingCars.first().brand} ${remainingCars.first().model}")
+    } else {
+        println("Введите корректное количество автомобилей.")
+    }
+}
 
 
 
